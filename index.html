@@ -1,0 +1,818 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FNO VAULT</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#090714;
+  --panel:#171128;
+  --purple:#955bff;
+  --border:#332746;
+  --text:#f7f4ff;
+  --muted:#a9a0ba;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,
+  "Segoe UI",sans-serif;
+}
+header{
+  padding:22px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--border);
+}
+.logo{font-size:20px;font-weight:800}
+.logo span{color:var(--purple)}
+main{max-width:700px;margin:auto;padding:22px}
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:22px;
+  margin-bottom:18px;
+}
+h1{font-size:28px;margin:8px 0}
+h2{font-size:19px}
+p{color:var(--muted);line-height:1.5}
+input{
+  width:100%;
+  padding:15px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#0d0a19;
+  color:white;
+  font-size:16px;
+  margin:8px 0;
+}
+button,.upload{
+  display:inline-block;
+  background:var(--purple);
+  color:white;
+  border:0;
+  border-radius:12px;
+  padding:13px 17px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+}
+button:disabled{opacity:.5}
+.secondary{background:#302445}
+.danger{background:#842f50}
+.hidden{display:none!important}
+.center{text-align:center}
+.shield{font-size:52px}
+.small{font-size:12px;color:var(--muted)}
+.toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+}
+.tile{
+  position:relative;
+  aspect-ratio:1;
+  background:#211a33;
+  overflow:hidden;
+  border-radius:8px;
+  padding:0;
+  border:0;
+}
+.tile img,.tile video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.tile .name{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  background:linear-gradient(transparent,#000c);
+  padding:15px 5px 5px;
+  font-size:10px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+#viewer{
+  position:fixed;
+  inset:0;
+  background:#080610;
+  z-index:10;
+  display:flex;
+  flex-direction:column;
+  padding:18px;
+  overflow:auto;
+}
+#viewerMedia{
+  flex:1;
+  min-height:200px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+#viewerMedia img,#viewerMedia video{
+  max-width:100%;
+  max-height:65vh;
+  object-fit:contain;
+}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+#status{min-height:20px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">✦ FNO <span>VAULT</span></div>
+  <button id="lockBtn" class="secondary hidden">
+    Lock
+  </button>
+</header>
+
+<main>
+  <section id="auth" class="card center">
+    <div class="shield">🛡️</div>
+    <h1>FNO VAULT</h1>
+    <p>Private encrypted photo storage</p>
+
+    <h2 id="authTitle">Unlock Vault</h2>
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Vault password"
+      autocomplete="off"
+    >
+
+    <input
+      id="confirm"
+      class="hidden"
+      type="password"
+      placeholder="Confirm password"
+      autocomplete="off"
+    >
+
+    <button id="authBtn">Unlock</button>
+
+    <p id="authMessage"></p>
+
+    <p class="small">
+      Your password is never uploaded.
+      There is no password recovery.
+    </p>
+  </section>
+
+  <section id="vault" class="hidden">
+    <div class="card">
+      <h1>My Private Vault</h1>
+      <p>Encrypted photos and videos</p>
+
+      <label class="upload" for="fileInput">
+        + Upload Photos & Videos
+      </label>
+
+      <input
+        id="fileInput"
+        type="file"
+        accept="image/*,video/*,.heic,.heif,.mov"
+        multiple
+        class="hidden"
+      >
+
+      <p id="status" class="small"></p>
+    </div>
+
+    <div class="toolbar">
+      <h2>My Library</h2>
+      <span id="count" class="small">0 files</span>
+    </div>
+
+    <div id="gallery" class="grid"></div>
+
+    <p id="empty" class="center">
+      No files uploaded yet.
+    </p>
+
+    <div class="card" style="margin-top:25px">
+      <h2>Storage Notice</h2>
+      <p class="small">
+        Files are encrypted and saved inside
+        this browser. Clearing website data,
+        browser eviction, or losing this device
+        may permanently delete them.
+        This is not cloud backup.
+      </p>
+    </div>
+  </section>
+</main>
+
+<section id="viewer" class="hidden">
+  <div class="toolbar">
+    <button id="closeViewer" class="secondary">
+      ← Back
+    </button>
+    <span>FNO VAULT</span>
+  </div>
+
+  <div id="viewerMedia"></div>
+
+  <div class="card">
+    <h2 id="viewName"></h2>
+    <p id="viewInfo"></p>
+
+    <div class="actions">
+      <button id="downloadBtn">Download Original</button>
+      <button id="deleteBtn" class="danger">Delete</button>
+    </div>
+  </div>
+</section>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
+let db;
+let vaultKey = null;
+let currentFile = null;
+let activeUrls = [];
+let busy = false;
+
+function show(id, visible) {
+  $(id).classList.toggle("hidden", !visible);
+}
+
+function message(text) {
+  $("authMessage").textContent = text;
+}
+
+function status(text) {
+  $("status").textContent = text;
+}
+
+function randomBytes(length) {
+  return crypto.getRandomValues(new Uint8Array(length));
+}
+
+function toArray(value) {
+  return Array.from(value);
+}
+
+function fromArray(value) {
+  return new Uint8Array(value);
+}
+
+function openDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open("FNO_VAULT_DB", 1);
+
+    request.onupgradeneeded = () => {
+      const database = request.result;
+
+      if (!database.objectStoreNames.contains("settings")) {
+        database.createObjectStore("settings");
+      }
+
+      if (!database.objectStoreNames.contains("files")) {
+        database.createObjectStore("files", {
+          keyPath: "id"
+        });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function transaction(store, mode, callback) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, mode);
+    const objectStore = tx.objectStore(store);
+    let result;
+
+    try {
+      result = callback(objectStore);
+    } catch (error) {
+      reject(error);
+      return;
+    }
+
+    tx.oncomplete = () => resolve(result);
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+}
+
+function getItem(store, key) {
+  return new Promise((resolve, reject) => {
+    const request = db.transaction(store, "readonly")
+      .objectStore(store).get(key);
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function getAll(store) {
+  return new Promise((resolve, reject) => {
+    const request = db.transaction(store, "readonly")
+      .objectStore(store).getAll();
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function putItem(store, value, key) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, "readwrite");
+    const objectStore = tx.objectStore(store);
+
+    if (key === undefined) {
+      objectStore.put(value);
+    } else {
+      objectStore.put(value, key);
+    }
+
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+}
+
+async function deleteItem(store, key) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, "readwrite");
+    tx.objectStore(store).delete(key);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function deriveKey(password, salt, iterations) {
+  const material = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(password),
+    "PBKDF2",
+    false,
+    ["deriveKey"]
+  );
+
+  return crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt,
+      iterations,
+      hash: "SHA-256"
+    },
+    material,
+    {
+      name: "AES-GCM",
+      length: 256
+    },
+    false,
+    ["encrypt", "decrypt"]
+  );
+}
+
+async function encryptBytes(bytes, key) {
+  const iv = randomBytes(12);
+
+  const encrypted = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    key,
+    bytes
+  );
+
+  return {
+    iv: toArray(iv),
+    data: encrypted
+  };
+}
+
+async function decryptBytes(record, key) {
+  return crypto.subtle.decrypt(
+    {
+      name: "AES-GCM",
+      iv: fromArray(record.iv)
+    },
+    key,
+    record.data
+  );
+}
+
+async function initialize() {
+  if (!window.isSecureContext || !crypto.subtle) {
+    message("HTTPS is required for encryption.");
+    $("authBtn").disabled = true;
+    return;
+  }
+
+  db = await openDatabase();
+
+  const settings = await getItem("settings", "vault");
+
+  if (!settings) {
+    $("authTitle").textContent = "Create Private Vault";
+    $("authBtn").textContent = "Create Vault";
+    show("confirm", true);
+  } else {
+    $("authTitle").textContent = "Unlock Vault";
+    $("authBtn").textContent = "Unlock";
+    show("confirm", false);
+  }
+}
+
+async function authenticate() {
+  if (busy) return;
+
+  const password = $("password").value;
+  const confirm = $("confirm").value;
+
+  if (!password) {
+    message("Enter your password.");
+    return;
+  }
+
+  busy = true;
+  $("authBtn").disabled = true;
+  message("Please wait...");
+
+  try {
+    let settings = await getItem("settings", "vault");
+
+    if (!settings) {
+      if (password.length < 16) {
+        throw new Error(
+          "Use a password with at least 16 characters."
+        );
+      }
+
+      if (password !== confirm) {
+        throw new Error("Passwords do not match.");
+      }
+
+      const salt = randomBytes(16);
+      const iterations = 600000;
+
+      const key = await deriveKey(
+        password, salt, iterations
+      );
+
+      const check = await encryptBytes(
+        encoder.encode("FNO_VAULT_VERIFIED_V1"),
+        key
+      );
+
+      settings = {
+        salt: toArray(salt),
+        iterations,
+        check
+      };
+
+      await putItem("settings", settings, "vault");
+      vaultKey = key;
+    } else {
+      const key = await deriveKey(
+        password,
+        fromArray(settings.salt),
+        settings.iterations
+      );
+
+      const plaintext = await decryptBytes(
+        settings.check,
+        key
+      );
+
+      if (
+        decoder.decode(plaintext) !==
+        "FNO_VAULT_VERIFIED_V1"
+      ) {
+        throw new Error("Invalid password.");
+      }
+
+      vaultKey = key;
+    }
+
+    $("password").value = "";
+    $("confirm").value = "";
+
+    show("auth", false);
+    show("vault", true);
+    show("lockBtn", true);
+
+    await renderGallery();
+
+  } catch (error) {
+    message(
+      error.name === "OperationError"
+        ? "Incorrect password or damaged vault."
+        : error.message
+    );
+  } finally {
+    busy = false;
+    $("authBtn").disabled = false;
+  }
+}
+
+function clearUrls() {
+  for (const url of activeUrls) {
+    URL.revokeObjectURL(url);
+  }
+  activeUrls = [];
+}
+
+function createUrl(blob) {
+  const url = URL.createObjectURL(blob);
+  activeUrls.push(url);
+  return url;
+}
+
+async function decryptFile(record) {
+  const metadataBytes = await decryptBytes(
+    record.metadata, vaultKey
+  );
+
+  const metadata = JSON.parse(
+    decoder.decode(metadataBytes)
+  );
+
+  const bytes = await decryptBytes(
+    record.content, vaultKey
+  );
+
+  const blob = new Blob(
+    [bytes],
+    { type: metadata.type || "application/octet-stream" }
+  );
+
+  return { metadata, blob };
+}
+
+async function uploadFiles(files) {
+  if (!vaultKey || busy) return;
+
+  busy = true;
+
+  try {
+    let completed = 0;
+
+    for (const file of files) {
+      if (
+        !file.type.startsWith("image/") &&
+        !file.type.startsWith("video/") &&
+        !/\.(heic|heif|mov)$/i.test(file.name)
+      ) {
+        continue;
+      }
+
+      status("Encrypting " + file.name);
+
+      const metadata = {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        modified: file.lastModified,
+        uploaded: Date.now()
+      };
+
+      const metadataEncrypted = await encryptBytes(
+        encoder.encode(JSON.stringify(metadata)),
+        vaultKey
+      );
+
+      const contentEncrypted = await encryptBytes(
+        await file.arrayBuffer(),
+        vaultKey
+      );
+
+      const record = {
+        id: crypto.randomUUID(),
+        metadata: metadataEncrypted,
+        content: contentEncrypted
+      };
+
+      await putItem("files", record);
+      completed++;
+    }
+
+    status(completed + " encrypted file(s) saved locally.");
+
+  } catch (error) {
+    status("Upload failed: " + error.message);
+  } finally {
+    busy = false;
+    $("fileInput").value = "";
+    await renderGallery();
+  }
+}
+
+async function renderGallery() {
+  if (!vaultKey) return;
+
+  clearUrls();
+
+  const gallery = $("gallery");
+  gallery.replaceChildren();
+
+  const records = await getAll("files");
+  const entries = [];
+
+  for (const record of records) {
+    try {
+      const result = await decryptFile(record);
+
+      entries.push({
+        record,
+        ...result
+      });
+    } catch (error) {
+      console.error("Unable to decrypt file", error);
+    }
+  }
+
+  entries.sort(
+    (a, b) =>
+      b.metadata.uploaded - a.metadata.uploaded
+  );
+
+  $("count").textContent = entries.length + " files";
+  show("empty", entries.length === 0);
+
+  for (const entry of entries) {
+    const tile = document.createElement("button");
+    tile.className = "tile";
+    tile.type = "button";
+
+    const type = entry.metadata.type || "";
+    const name = entry.metadata.name || "File";
+
+    if (type.startsWith("image/")) {
+      const image = document.createElement("img");
+      image.src = createUrl(entry.blob);
+      image.alt = name;
+      image.loading = "lazy";
+      tile.appendChild(image);
+
+    } else if (type.startsWith("video/")) {
+      const video = document.createElement("video");
+      video.src = createUrl(entry.blob);
+      video.preload = "metadata";
+      video.muted = true;
+      tile.appendChild(video);
+
+    } else {
+      const icon = document.createElement("div");
+      icon.textContent = "📁";
+      icon.style.fontSize = "38px";
+      tile.appendChild(icon);
+    }
+
+    const label = document.createElement("div");
+    label.className = "name";
+    label.textContent = name;
+    tile.appendChild(label);
+
+    tile.onclick = () => openViewer(entry);
+    gallery.appendChild(tile);
+  }
+}
+
+function openViewer(entry) {
+  currentFile = entry;
+
+  const container = $("viewerMedia");
+  container.replaceChildren();
+
+  const type = entry.metadata.type || "";
+  let media;
+
+  if (type.startsWith("image/")) {
+    media = document.createElement("img");
+    media.src = createUrl(entry.blob);
+
+  } else if (type.startsWith("video/")) {
+    media = document.createElement("video");
+    media.src = createUrl(entry.blob);
+    media.controls = true;
+    media.playsInline = true;
+
+  } else {
+    media = document.createElement("p");
+    media.textContent = "Preview unavailable";
+  }
+
+  container.appendChild(media);
+
+  $("viewName").textContent = entry.metadata.name;
+
+  const date = new Date(
+    entry.metadata.modified || entry.metadata.uploaded
+  );
+
+  $("viewInfo").textContent =
+    date.toLocaleString() +
+    " • " +
+    (entry.metadata.size / 1048576).toFixed(2) +
+    " MB";
+
+  show("viewer", true);
+}
+
+function closeViewer() {
+  show("viewer", false);
+  $("viewerMedia").replaceChildren();
+  currentFile = null;
+  renderGallery();
+}
+
+function downloadCurrent() {
+  if (!currentFile) return;
+
+  const url = URL.createObjectURL(currentFile.blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = currentFile.metadata.name;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+async function deleteCurrent() {
+  if (!currentFile) return;
+
+  if (!confirm("Permanently delete this file from the vault?")) {
+    return;
+  }
+
+  await deleteItem("files", currentFile.record.id);
+  closeViewer();
+}
+
+function lockVault() {
+  vaultKey = null;
+  currentFile = null;
+
+  clearUrls();
+
+  $("gallery").replaceChildren();
+  $("viewerMedia").replaceChildren();
+  $("password").value = "";
+
+  show("viewer", false);
+  show("vault", false);
+  show("lockBtn", false);
+  show("auth", true);
+
+  message("");
+}
+
+$("authBtn").onclick = authenticate;
+
+$("password").addEventListener("keydown", event => {
+  if (event.key === "Enter") authenticate();
+});
+
+$("fileInput").onchange = event => {
+  uploadFiles(Array.from(event.target.files));
+};
+
+$("lockBtn").onclick = lockVault;
+$("closeViewer").onclick = closeViewer;
+$("downloadBtn").onclick = downloadCurrent;
+$("deleteBtn").onclick = deleteCurrent;
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && vaultKey) {
+    lockVault();
+  }
+});
+
+initialize().catch(error => {
+  message("Vault initialization failed: " + error.message);
+  $("authBtn").disabled = true;
+});
+</script>
+</body>
+</html>
