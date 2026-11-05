@@ -6,147 +6,811 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>FNO VAULT</title>
 <style>
-:root{color-scheme:dark;--bg:#090714;--panel:#171128;--accent:#995fff;--line:#382a4e;--muted:#afa6c2}
+:root{
+ color-scheme:dark;
+ --bg:#090714;
+ --panel:#171128;
+ --accent:#995fff;
+ --line:#382a4e;
+ --muted:#afa6c2
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#f8f5ff;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif}
-header{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+body{
+ margin:0;background:var(--bg);color:#f8f5ff;
+ font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif
+}
+header{
+ padding:18px 20px;border-bottom:1px solid var(--line);
+ display:flex;align-items:center;justify-content:space-between
+}
 .brand{font-size:20px;font-weight:800}
 .brand span{color:var(--accent)}
 main{max-width:750px;margin:auto;padding:20px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:18px}
+.card{
+ background:var(--panel);border:1px solid var(--line);
+ border-radius:20px;padding:20px;margin-bottom:18px
+}
 h1{font-size:27px;margin:8px 0}
 h2{font-size:19px;margin:8px 0}
 p,.hint{color:var(--muted);line-height:1.5}
-button,.button{border:0;border-radius:12px;padding:13px 16px;background:var(--accent);color:white;font-weight:700;font-size:15px;cursor:pointer;display:inline-block}
+button{
+ border:0;border-radius:12px;padding:13px 16px;
+ background:var(--accent);color:white;font-weight:700;
+ font-size:15px;cursor:pointer
+}
 button:disabled{opacity:.55}
 .secondary{background:#372a50}
 .danger{background:#913451}
 .hidden{display:none!important}
-input[type=password],input[type=file]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#100c1d;color:white;font-size:16px;margin:7px 0}
+input[type=password],input[type=file]{
+ width:100%;padding:12px;border:1px solid var(--line);
+ border-radius:10px;background:#100c1d;color:white;
+ font-size:16px;margin:7px 0
+}
 .small{font-size:12px}
-.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.tile{position:relative;aspect-ratio:1;background:#271d38;border:0;border-radius:9px;overflow:hidden;padding:0}
-.tile img,.tile video{width:100%;height:100%;object-fit:cover}
-.tile .name{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,#000d);font-size:10px;padding:18px 5px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.live{position:absolute;top:7px;left:7px;background:#160f25cc;border:1px solid #cbb0ff;border-radius:8px;font-size:11px;padding:4px 6px}
+.toolbar{
+ display:flex;align-items:center;
+ justify-content:space-between;gap:10px
+}
+.grid{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:6px
+}
+.tile{
+ position:relative;aspect-ratio:1;background:#271d38;
+ border:0;border-radius:9px;overflow:hidden;padding:0
+}
+.tile img,.tile video{
+ width:100%;height:100%;object-fit:cover
+}
+.tile .name{
+ position:absolute;bottom:0;left:0;right:0;
+ background:linear-gradient(transparent,#000d);
+ font-size:10px;padding:18px 5px 5px;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.live{
+ position:absolute;top:7px;left:7px;
+ background:#160f25cc;border:1px solid #cbb0ff;
+ border-radius:8px;font-size:11px;padding:4px 6px
+}
 .actions{display:flex;flex-wrap:wrap;gap:8px}
-.viewer{position:fixed;inset:0;z-index:10;background:#090714;overflow:auto;padding:18px}
+.viewer{
+ position:fixed;inset:0;z-index:10;
+ background:#090714;overflow:auto;padding:18px
+}
 .viewer-inner{max-width:750px;margin:auto}
-.media{height:55vh;display:flex;justify-content:center;align-items:center}
-.media img,.media video{max-height:100%;max-width:100%;object-fit:contain}
+.media{
+ height:55vh;display:flex;
+ justify-content:center;align-items:center
+}
+.media img,.media video{
+ max-height:100%;max-width:100%;object-fit:contain
+}
 .note{border-left:3px solid var(--accent);padding-left:12px}
 .center{text-align:center}
+.loop-status{
+ display:flex;align-items:center;gap:8px;
+ color:#c5a6ff;font-size:13px;margin:12px 0
+}
+.loop-dot{
+ width:9px;height:9px;background:#a36cff;
+ border-radius:50%;box-shadow:0 0 12px #a36cff
+}
 </style>
 </head>
 <body>
+
 <header>
-<div class="brand">✦ FNO <span>VAULT</span></div>
-<button id="lockBtn" class="secondary hidden">Lock</button>
+ <div class="brand">✦ FNO <span>VAULT</span></div>
+ <button id="lockBtn" class="secondary hidden">Lock</button>
 </header>
+
 <main>
 <section id="auth" class="card center">
-<div style="font-size:45px">🛡️</div>
-<h1>FNO VAULT</h1>
-<p>Private encrypted photo library</p>
-<h2 id="authTitle">Unlock Vault</h2>
-<input id="password" type="password" placeholder="Vault password" autocomplete="off">
-<input id="confirmPassword" class="hidden" type="password" placeholder="Confirm password" autocomplete="off">
-<button id="authBtn">Unlock</button>
-<p id="authMessage" role="status"></p>
-<p class="small">Your password stays on this device. No password recovery.</p>
+ <div style="font-size:45px">🛡️</div>
+ <h1>FNO VAULT</h1>
+ <p>Private encrypted photo library</p>
+ <h2 id="authTitle">Unlock Vault</h2>
+ <input id="password" type="password"
+ placeholder="Vault password" autocomplete="off">
+ <input id="confirmPassword" class="hidden"
+ type="password" placeholder="Confirm password"
+ autocomplete="off">
+ <button id="authBtn">Unlock</button>
+ <p id="authMessage" role="status"></p>
+ <p class="small">
+ Your password stays on this device.
+ No password recovery.
+ </p>
 </section>
+
 <section id="vault" class="hidden">
-<div class="card">
-<h1>My Private Vault</h1>
-<p>Encrypted photos, videos and paired Live Photos</p>
-<h2>Upload photo or video</h2>
-<input id="regularFiles" type="file" accept="image/*,video/*,.heic,.heif,.mov" multiple>
-<button id="regularUpload">Encrypt & Save</button>
-<h2 style="margin-top:24px">Upload a Live Photo pair</h2>
-<p class="small">Choose the original still image (HEIC/JPEG) and matching MOV motion clip. Both are needed.</p>
-<label class="hint" for="liveStill">Still image</label>
-<input id="liveStill" type="file" accept="image/*,.heic,.heif,.jpg,.jpeg">
-<label class="hint" for="liveMotion">Motion video</label>
-<input id="liveMotion" type="file" accept="video/quicktime,video/*,.mov">
-<button id="liveUpload">Save Live Photo Pair</button>
-<p id="status" role="status" class="small"></p>
-</div>
-<div class="toolbar">
-<h2>My Library</h2>
-<span id="count" class="small hint">0 items</span>
-</div>
-<div id="gallery" class="grid"></div>
-<p id="empty" class="center">No uploads yet.</p>
-<div class="card" style="margin-top:24px">
-<h2>Important storage notice</h2>
-<p class="small">Files are encrypted in Safari's local IndexedDB, not stored in GitHub or cloud storage. Clearing website data, browser storage eviction, or losing this device may permanently erase them. Large videos can exhaust iPhone memory. Do not delete irreplaceable originals.</p>
-</div>
+ <div class="card">
+  <h1>My Private Vault</h1>
+  <p>Encrypted photos, videos and paired Live Photos</p>
+
+  <h2>Upload photo or video</h2>
+  <input id="regularFiles" type="file"
+  accept="image/*,video/*,.heic,.heif,.mov" multiple>
+  <button id="regularUpload">Encrypt & Save</button>
+
+  <h2 style="margin-top:24px">Upload a Live Photo pair</h2>
+  <p class="small">
+  Choose the original still image and matching
+  MOV motion clip.
+  </p>
+
+  <label class="hint" for="liveStill">Still image</label>
+  <input id="liveStill" type="file"
+  accept="image/*,.heic,.heif,.jpg,.jpeg">
+
+  <label class="hint" for="liveMotion">Motion video</label>
+  <input id="liveMotion" type="file"
+  accept="video/quicktime,video/*,.mov">
+
+  <button id="liveUpload">Save Live Photo Pair</button>
+  <p id="status" role="status" class="small"></p>
+ </div>
+
+ <div class="toolbar">
+  <h2>My Library</h2>
+  <span id="count" class="small hint">0 items</span>
+ </div>
+
+ <div id="gallery" class="grid"></div>
+ <p id="empty" class="center">No uploads yet.</p>
+
+ <div class="card" style="margin-top:24px">
+  <h2>Storage Notice</h2>
+  <p class="small">
+  Files are encrypted and stored locally in this
+  browser, not backed up to GitHub or the cloud.
+  Clearing website data or losing this device
+  may erase them permanently.
+  </p>
+ </div>
 </section>
 </main>
+
 <section id="viewer" class="viewer hidden">
 <div class="viewer-inner">
-<div class="toolbar">
-<button id="backBtn" class="secondary">← Back</button>
-<b>FNO VAULT</b>
-</div>
-<div id="media" class="media"></div>
-<div class="card">
-<h2 id="viewName"></h2>
-<p id="viewInfo"></p>
-<p id="liveHelp" class="note small hidden">This vault stores both components together, but Safari cannot guarantee re-import as an Apple Live Photo. Download both original files for preservation.</p>
-<div class="actions">
-<button id="playMotion" class="secondary hidden">▶ Play Motion</button>
-<button id="downloadStill">Download Original</button>
-<button id="downloadMotion" class="secondary hidden">Download MOV</button>
-<button id="deleteBtn" class="danger">Delete</button>
-</div>
-</div>
+ <div class="toolbar">
+  <button id="backBtn" class="secondary">← Back</button>
+  <b>FNO VAULT</b>
+ </div>
+
+ <div id="media" class="media"></div>
+
+ <div class="card">
+  <h2 id="viewName"></h2>
+  <p id="viewInfo"></p>
+
+  <div id="loopStatus" class="loop-status hidden">
+   <span class="loop-dot"></span>
+   Live Photo looping
+  </div>
+
+  <p id="liveHelp" class="note small hidden">
+  Both Live Photo components are stored together.
+  Safari cannot guarantee restoration as an
+  Apple Live Photo when downloaded.
+  </p>
+
+  <div class="actions">
+   <button id="playMotion" class="secondary hidden">
+    ▶ Play Motion
+   </button>
+
+   <button id="loopMotion" class="hidden">
+    🔁 Loop Live Photo
+   </button>
+
+   <button id="stopLoop" class="secondary hidden">
+    ⏹ Stop Loop Live Photo
+   </button>
+
+   <button id="downloadStill">
+    Download Original
+   </button>
+
+   <button id="downloadMotion" class="secondary hidden">
+    Download MOV
+   </button>
+
+   <button id="deleteBtn" class="danger">
+    Delete
+   </button>
+  </div>
+ </div>
 </div>
 </section>
+
 <script>
-'use strict';
-const $=id=>document.getElementById(id),enc=new TextEncoder(),dec=new TextDecoder();
-let db,key=null,current=null,busy=false,urls=[];
-function show(id,on){$(id).classList.toggle('hidden',!on)}
-function status(s){$('status').textContent=s}
-function bytes(n){return crypto.getRandomValues(new Uint8Array(n))}
+"use strict";
+
+const $ = id => document.getElementById(id);
+const enc = new TextEncoder();
+const dec = new TextDecoder();
+
+let db;
+let key = null;
+let current = null;
+let busy = false;
+let urls = [];
+let motionToken = 0;
+let looping = false;
+
+function show(id,on){
+ $(id).classList.toggle("hidden",!on);
+}
+function status(s){
+ $("status").textContent=s;
+}
+function bytes(n){
+ return crypto.getRandomValues(new Uint8Array(n));
+}
 function array(v){return Array.from(v)}
 function from(v){return new Uint8Array(v)}
-function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open('FNO_VAULT_DB',1);r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('settings'))d.createObjectStore('settings');if(!d.objectStoreNames.contains('files'))d.createObjectStore('files',{keyPath:'id'})};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
-function get(store,id){return new Promise((resolve,reject)=>{const r=db.transaction(store,'readonly').objectStore(store).get(id);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
-function all(store){return new Promise((resolve,reject)=>{const r=db.transaction(store,'readonly').objectStore(store).getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
-function put(store,value,id){return new Promise((resolve,reject)=>{const t=db.transaction(store,'readwrite'),s=t.objectStore(store);if(id===undefined)s.put(value);else s.put(value,id);t.oncomplete=resolve;t.onerror=()=>reject(t.error);t.onabort=()=>reject(t.error)})}
-function remove(store,id){return new Promise((resolve,reject)=>{const t=db.transaction(store,'readwrite');t.objectStore(store).delete(id);t.oncomplete=resolve;t.onerror=()=>reject(t.error);t.onabort=()=>reject(t.error)})}
-async function derive(password,salt,iterations){const material=await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
-async function encrypt(data){const iv=bytes(12);return{iv:array(iv),data:await crypto.subtle.encrypt({name:'AES-GCM',iv},key,data)}}
-async function decrypt(value){return crypto.subtle.decrypt({name:'AES-GCM',iv:from(value.iv)},key,value.data)}
-async function init(){if(!isSecureContext||!crypto.subtle){$('authMessage').textContent='HTTPS is required';$('authBtn').disabled=true;return}db=await openDB();const s=await get('settings','vault');$('authTitle').textContent=s?'Unlock Vault':'Create Private Vault';$('authBtn').textContent=s?'Unlock':'Create Vault';show('confirmPassword',!s)}
-async function auth(){if(busy)return;busy=true;$('authBtn').disabled=true;try{const password=$('password').value;let s=await get('settings','vault');if(!password)throw Error('Enter a password');if(!s){if(password.length<16)throw Error('Use at least 16 characters');if(password!==$('confirmPassword').value)throw Error('Passwords do not match');const salt=bytes(16),iterations=600000;key=await derive(password,salt,iterations);const iv=bytes(12),check={iv:array(iv),data:await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode('FNO_VAULT_VERIFIED_V1'))};await put('settings',{salt:array(salt),iterations,check},'vault')}else{key=await derive(password,from(s.salt),s.iterations);const check=await crypto.subtle.decrypt({name:'AES-GCM',iv:from(s.check.iv)},key,s.check.data);if(dec.decode(check)!=='FNO_VAULT_VERIFIED_V1')throw Error('Invalid password')}show('auth',false);show('vault',true);show('lockBtn',true);$('password').value='';$('confirmPassword').value='';await render()}catch(e){key=null;$('authMessage').textContent=e.name==='OperationError'?'Incorrect password or damaged vault.':e.message}finally{busy=false;$('authBtn').disabled=false}}
-async function saveFiles(files,live){if(!key||busy)return;busy=true;$('regularUpload').disabled=true;$('liveUpload').disabled=true;try{if(!files.length)throw Error('Choose files first');if(live&&(files.length!==2||!(/\.(heic|heif|jpe?g|png)$/i.test(files[0].name)||files[0].type.startsWith('image/'))||!(/\.mov$/i.test(files[1].name)||files[1].type.startsWith('video/'))))throw Error('Choose an image and its matching MOV video');let saved=0;for(const group of live?[files]:files.map(f=>[f])){const still=group[0],motion=live?group[1]:null;if(!live&&!still.type.startsWith('image/')&&!still.type.startsWith('video/')&&!/\.(heic|heif|mov)$/i.test(still.name))continue;status('Encrypting '+still.name+'...');const metadata={name:still.name,type:still.type,size:still.size,modified:still.lastModified,uploaded:Date.now(),...(live?{kind:'live-pair',motionName:motion.name,motionType:motion.type,motionSize:motion.size,motionModified:motion.lastModified}:{})};const record={id:crypto.randomUUID(),metadata:await encrypt(enc.encode(JSON.stringify(metadata))),content:await encrypt(await still.arrayBuffer())};if(live)record.motion=await encrypt(await motion.arrayBuffer());await put('files',record);saved++}status(saved+' encrypted item(s) saved locally.');$('regularFiles').value='';$('liveStill').value='';$('liveMotion').value='';await render()}catch(e){status('Upload failed: '+e.message)}finally{busy=false;$('regularUpload').disabled=false;$('liveUpload').disabled=false}}
-async function unpack(r){const metadata=JSON.parse(dec.decode(await decrypt(r.metadata))),data=await decrypt(r.content),blob=new Blob([data],{type:metadata.type||'application/octet-stream'});return{record:r,metadata,blob}}
-function clearURLs(){for(const u of urls)URL.revokeObjectURL(u);urls=[]}
-function url(blob){const u=URL.createObjectURL(blob);urls.push(u);return u}
-async function render(){if(!key)return;clearURLs();$('gallery').replaceChildren();const records=await all('files'),entries=[];for(const r of records){try{entries.push(await unpack(r))}catch(e){console.error('Decryption failed for item',r.id,e)}}entries.sort((a,b)=>b.metadata.uploaded-a.metadata.uploaded);$('count').textContent=entries.length+' items';show('empty',!entries.length);for(const e of entries){const tile=document.createElement('button');tile.className='tile';const type=e.metadata.type||'';let media;if(type.startsWith('image/')||/\.(heic|heif|jpe?g|png)$/i.test(e.metadata.name)){media=document.createElement('img');media.src=url(e.blob);media.alt=e.metadata.name}else if(type.startsWith('video/')||/\.mov$/i.test(e.metadata.name)){media=document.createElement('video');media.src=url(e.blob);media.preload='metadata';media.muted=true}else{media=document.createElement('span');media.textContent='📁'}tile.appendChild(media);if(e.metadata.kind==='live-pair'){const tag=document.createElement('span');tag.className='live';tag.textContent='◎ LIVE';tile.appendChild(tag)}const label=document.createElement('div');label.className='name';label.textContent=e.metadata.name;tile.appendChild(label);tile.onclick=()=>view(e);$('gallery').appendChild(tile)}}
-function view(e){current=e;$('media').replaceChildren();const type=e.metadata.type||'',media=type.startsWith('video/')?document.createElement('video'):document.createElement('img');media.src=url(e.blob);if(media.tagName==='VIDEO'){media.controls=true;media.playsInline=true}media.onerror=()=>{if(!current)return;$('viewInfo').textContent+=' • Preview unsupported by this browser; original download is available.'};$('media').appendChild(media);$('viewName').textContent=e.metadata.name;$('viewInfo').textContent=new Date(e.metadata.modified||e.metadata.uploaded).toLocaleString()+' • '+(e.metadata.size/1048576).toFixed(2)+' MB';const live=e.metadata.kind==='live-pair'&&!!e.record.motion;show('liveHelp',live);show('playMotion',live);show('downloadMotion',live);$('downloadStill').textContent=live?'Download Still Image':'Download Original';show('viewer',true)}
-async function playMotion(){if(!current?.record.motion)return;try{const data=await decrypt(current.record.motion),blob=new Blob([data],{type:current.metadata.motionType||'video/quicktime'});$('media').replaceChildren();const video=document.createElement('video');video.src=url(blob);video.controls=true;video.playsInline=true;video.autoplay=true;$('media').appendChild(video);await video.play().catch(()=>{})}catch(e){alert('Motion playback unavailable: '+e.message)}}
-function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
-async function downloadMotion(){if(!current?.record.motion)return;try{const data=await decrypt(current.record.motion);download(new Blob([data],{type:current.metadata.motionType||'video/quicktime'}),current.metadata.motionName||'motion.mov')}catch(e){alert('Download failed: '+e.message)}}
-async function del(){if(!current||!confirm('Permanently delete this item from the local vault?'))return;await remove('files',current.record.id);closeViewer()}
-function closeViewer(){show('viewer',false);$('media').replaceChildren();current=null;render()}
-function lock(){key=null;current=null;clearURLs();$('gallery').replaceChildren();$('media').replaceChildren();show('viewer',false);show('vault',false);show('lockBtn',false);show('auth',true);$('password').value='';$('authTitle').textContent='Unlock Vault';$('authBtn').textContent='Unlock';show('confirmPassword',false);$('authMessage').textContent=''}
-$('authBtn').onclick=auth;
-$('password').onkeydown=e=>{if(e.key==='Enter')auth()};
-$('regularUpload').onclick=()=>saveFiles([...$('regularFiles').files],false);
-$('liveUpload').onclick=()=>saveFiles([$('liveStill').files[0],$('liveMotion').files[0]].filter(Boolean),true);
-$('lockBtn').onclick=lock;
-$('backBtn').onclick=closeViewer;
-$('playMotion').onclick=playMotion;
-$('downloadStill').onclick=()=>{if(current)download(current.blob,current.metadata.name)};
-$('downloadMotion').onclick=downloadMotion;
-$('deleteBtn').onclick=del;
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&key)lock()});
-init().catch(e=>{$('authMessage').textContent='Initialization failed: '+e.message;$('authBtn').disabled=true});
+
+function openDB(){
+ return new Promise((resolve,reject)=>{
+  const r=indexedDB.open("FNO_VAULT_DB",1);
+  r.onupgradeneeded=()=>{
+   const d=r.result;
+   if(!d.objectStoreNames.contains("settings"))
+    d.createObjectStore("settings");
+   if(!d.objectStoreNames.contains("files"))
+    d.createObjectStore("files",{keyPath:"id"});
+  };
+  r.onsuccess=()=>resolve(r.result);
+  r.onerror=()=>reject(r.error);
+ });
+}
+
+function get(store,id){
+ return new Promise((resolve,reject)=>{
+  const r=db.transaction(store,"readonly")
+   .objectStore(store).get(id);
+  r.onsuccess=()=>resolve(r.result);
+  r.onerror=()=>reject(r.error);
+ });
+}
+
+function all(store){
+ return new Promise((resolve,reject)=>{
+  const r=db.transaction(store,"readonly")
+   .objectStore(store).getAll();
+  r.onsuccess=()=>resolve(r.result);
+  r.onerror=()=>reject(r.error);
+ });
+}
+
+function put(store,value,id){
+ return new Promise((resolve,reject)=>{
+  const t=db.transaction(store,"readwrite");
+  const s=t.objectStore(store);
+  if(id===undefined)s.put(value);
+  else s.put(value,id);
+  t.oncomplete=resolve;
+  t.onerror=()=>reject(t.error);
+  t.onabort=()=>reject(t.error);
+ });
+}
+
+function remove(store,id){
+ return new Promise((resolve,reject)=>{
+  const t=db.transaction(store,"readwrite");
+  t.objectStore(store).delete(id);
+  t.oncomplete=resolve;
+  t.onerror=()=>reject(t.error);
+  t.onabort=()=>reject(t.error);
+ });
+}
+
+async function derive(password,salt,iterations){
+ const material=await crypto.subtle.importKey(
+  "raw",enc.encode(password),"PBKDF2",
+  false,["deriveKey"]
+ );
+ return crypto.subtle.deriveKey(
+  {name:"PBKDF2",salt,iterations,hash:"SHA-256"},
+  material,
+  {name:"AES-GCM",length:256},
+  false,["encrypt","decrypt"]
+ );
+}
+
+async function encrypt(data){
+ const iv=bytes(12);
+ return {
+  iv:array(iv),
+  data:await crypto.subtle.encrypt(
+   {name:"AES-GCM",iv},key,data
+  )
+ };
+}
+
+async function decrypt(value){
+ return crypto.subtle.decrypt(
+  {name:"AES-GCM",iv:from(value.iv)},
+  key,value.data
+ );
+}
+
+async function init(){
+ if(!isSecureContext||!crypto.subtle){
+  $("authMessage").textContent="HTTPS is required";
+  $("authBtn").disabled=true;
+  return;
+ }
+ db=await openDB();
+ const s=await get("settings","vault");
+ $("authTitle").textContent=s?
+  "Unlock Vault":"Create Private Vault";
+ $("authBtn").textContent=s?
+  "Unlock":"Create Vault";
+ show("confirmPassword",!s);
+}
+
+async function auth(){
+ if(busy)return;
+ busy=true;
+ $("authBtn").disabled=true;
+ try{
+  const password=$("password").value;
+  let s=await get("settings","vault");
+
+  if(!password)throw Error("Enter a password");
+
+  if(!s){
+   if(password.length<16)
+    throw Error("Use at least 16 characters");
+   if(password!==$("confirmPassword").value)
+    throw Error("Passwords do not match");
+
+   const salt=bytes(16),iterations=600000;
+   key=await derive(password,salt,iterations);
+
+   const check=await encrypt(
+    enc.encode("FNO_VAULT_VERIFIED_V1")
+   );
+
+   await put("settings",{
+    salt:array(salt),iterations,check
+   },"vault");
+  }else{
+   key=await derive(
+    password,from(s.salt),s.iterations
+   );
+
+   const check=await decrypt(s.check);
+   if(dec.decode(check)!=="FNO_VAULT_VERIFIED_V1")
+    throw Error("Invalid password");
+  }
+
+  show("auth",false);
+  show("vault",true);
+  show("lockBtn",true);
+  $("password").value="";
+  $("confirmPassword").value="";
+  await render();
+
+ }catch(e){
+  key=null;
+  $("authMessage").textContent=
+   e.name==="OperationError"?
+   "Incorrect password or damaged vault.":e.message;
+ }finally{
+  busy=false;
+  $("authBtn").disabled=false;
+ }
+}
+
+async function saveFiles(files,live){
+ if(!key||busy)return;
+ busy=true;
+ $("regularUpload").disabled=true;
+ $("liveUpload").disabled=true;
+
+ try{
+  if(!files.length)throw Error("Choose files first");
+
+  if(live&&(
+   files.length!==2||
+   !(/\.(heic|heif|jpe?g|png)$/i.test(files[0].name)
+     ||files[0].type.startsWith("image/"))||
+   !(/\.mov$/i.test(files[1].name)
+     ||files[1].type.startsWith("video/"))
+  ))throw Error("Choose an image and matching MOV video");
+
+  let saved=0;
+  const groups=live?[files]:files.map(f=>[f]);
+
+  for(const group of groups){
+   const still=group[0];
+   const motion=live?group[1]:null;
+
+   if(!live&&
+      !still.type.startsWith("image/")&&
+      !still.type.startsWith("video/")&&
+      !/\.(heic|heif|mov)$/i.test(still.name))
+    continue;
+
+   status("Encrypting "+still.name+"...");
+
+   const metadata={
+    name:still.name,
+    type:still.type,
+    size:still.size,
+    modified:still.lastModified,
+    uploaded:Date.now(),
+    ...(live?{
+     kind:"live-pair",
+     motionName:motion.name,
+     motionType:motion.type,
+     motionSize:motion.size,
+     motionModified:motion.lastModified
+    }:{})
+   };
+
+   const record={
+    id:crypto.randomUUID(),
+    metadata:await encrypt(
+     enc.encode(JSON.stringify(metadata))
+    ),
+    content:await encrypt(
+     await still.arrayBuffer()
+    )
+   };
+
+   if(live)
+    record.motion=await encrypt(
+     await motion.arrayBuffer()
+    );
+
+   await put("files",record);
+   saved++;
+  }
+
+  status(saved+" encrypted item(s) saved locally.");
+  $("regularFiles").value="";
+  $("liveStill").value="";
+  $("liveMotion").value="";
+  await render();
+
+ }catch(e){
+  status("Upload failed: "+e.message);
+ }finally{
+  busy=false;
+  $("regularUpload").disabled=false;
+  $("liveUpload").disabled=false;
+ }
+}
+
+async function unpack(r){
+ const metadata=JSON.parse(
+  dec.decode(await decrypt(r.metadata))
+ );
+ const data=await decrypt(r.content);
+ const blob=new Blob([data],{
+  type:metadata.type||"application/octet-stream"
+ });
+ return {record:r,metadata,blob};
+}
+
+function clearURLs(){
+ for(const u of urls)URL.revokeObjectURL(u);
+ urls=[];
+}
+
+function url(blob){
+ const u=URL.createObjectURL(blob);
+ urls.push(u);
+ return u;
+}
+
+async function render(){
+ if(!key)return;
+ clearURLs();
+ $("gallery").replaceChildren();
+
+ const records=await all("files");
+ const entries=[];
+
+ for(const r of records){
+  try{
+   entries.push(await unpack(r));
+  }catch(e){
+   console.error("Decryption failed for item",r.id,e);
+  }
+ }
+
+ entries.sort(
+  (a,b)=>b.metadata.uploaded-a.metadata.uploaded
+ );
+
+ $("count").textContent=entries.length+" items";
+ show("empty",!entries.length);
+
+ for(const e of entries){
+  const tile=document.createElement("button");
+  tile.className="tile";
+  const type=e.metadata.type||"";
+  let media;
+
+  if(type.startsWith("image/")||
+     /\.(heic|heif|jpe?g|png)$/i.test(e.metadata.name)){
+   media=document.createElement("img");
+   media.src=url(e.blob);
+   media.alt=e.metadata.name;
+  }else if(type.startsWith("video/")||
+           /\.mov$/i.test(e.metadata.name)){
+   media=document.createElement("video");
+   media.src=url(e.blob);
+   media.preload="metadata";
+   media.muted=true;
+  }else{
+   media=document.createElement("span");
+   media.textContent="📁";
+  }
+
+  tile.appendChild(media);
+
+  if(e.metadata.kind==="live-pair"){
+   const tag=document.createElement("span");
+   tag.className="live";
+   tag.textContent="◎ LIVE";
+   tile.appendChild(tag);
+  }
+
+  const label=document.createElement("div");
+  label.className="name";
+  label.textContent=e.metadata.name;
+  tile.appendChild(label);
+
+  tile.onclick=()=>view(e);
+  $("gallery").appendChild(tile);
+ }
+}
+
+function restoreStill(){
+ if(!current)return;
+ $("media").replaceChildren();
+
+ const type=current.metadata.type||"";
+ const isVideo=type.startsWith("video/");
+
+ const media=document.createElement(
+  isVideo?"video":"img"
+ );
+ media.src=url(current.blob);
+
+ if(isVideo){
+  media.controls=true;
+  media.playsInline=true;
+ }
+
+ $("media").appendChild(media);
+}
+
+function setLoopUI(active){
+ looping=active;
+ show("loopStatus",active);
+ show("stopLoop",active);
+ show("loopMotion",!active&&isLive());
+ show("playMotion",!active&&isLive());
+}
+
+function isLive(){
+ return !!(
+  current&&
+  current.metadata.kind==="live-pair"&&
+  current.record.motion
+ );
+}
+
+function view(e){
+ motionToken++;
+ current=e;
+ restoreStill();
+
+ $("viewName").textContent=e.metadata.name;
+ $("viewInfo").textContent=
+  new Date(
+   e.metadata.modified||e.metadata.uploaded
+  ).toLocaleString()+
+  " • "+(e.metadata.size/1048576).toFixed(2)+" MB";
+
+ const live=isLive();
+ show("liveHelp",live);
+ show("downloadMotion",live);
+ $("downloadStill").textContent=live?
+  "Download Still Image":"Download Original";
+
+ setLoopUI(false);
+ show("viewer",true);
+}
+
+async function startMotion(loop){
+ if(!isLive()||!key)return;
+
+ const token=++motionToken;
+ const entry=current;
+
+ try{
+  const data=await decrypt(entry.record.motion);
+
+  if(token!==motionToken||current!==entry||!key)
+   return;
+
+  const blob=new Blob([data],{
+   type:entry.metadata.motionType||"video/quicktime"
+  });
+
+  const video=document.createElement("video");
+  video.src=url(blob);
+  video.playsInline=true;
+  video.controls=!loop;
+  video.autoplay=true;
+  video.loop=loop;
+  video.muted=loop;
+
+  $("media").replaceChildren();
+  $("media").appendChild(video);
+
+  setLoopUI(loop);
+
+  if(!loop){
+   video.onended=()=>{
+    if(token===motionToken&&current===entry){
+     restoreStill();
+    }
+   };
+  }
+
+  await video.play().catch(()=>{
+   // Safari may require a second tap to start playback.
+  });
+
+ }catch(e){
+  if(token===motionToken){
+   setLoopUI(false);
+   restoreStill();
+   alert("Motion playback unavailable: "+e.message);
+  }
+ }
+}
+
+function stopMotionLoop(){
+ motionToken++;
+
+ const video=$("media").querySelector("video");
+ if(video){
+  video.pause();
+  video.loop=false;
+  video.removeAttribute("src");
+  video.load();
+ }
+
+ setLoopUI(false);
+ restoreStill();
+}
+
+function download(blob,name){
+ const u=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=u;
+ a.download=name;
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(u),60000);
+}
+
+async function downloadMotion(){
+ if(!isLive())return;
+ try{
+  const data=await decrypt(current.record.motion);
+  download(
+   new Blob([data],{
+    type:current.metadata.motionType||
+     "video/quicktime"
+   }),
+   current.metadata.motionName||"motion.mov"
+  );
+ }catch(e){
+  alert("Download failed: "+e.message);
+ }
+}
+
+async function del(){
+ if(!current)return;
+ if(!confirm(
+  "Permanently delete this item from the local vault?"
+ ))return;
+
+ await remove("files",current.record.id);
+ closeViewer();
+}
+
+function closeViewer(){
+ motionToken++;
+ looping=false;
+
+ const video=$("media").querySelector("video");
+ if(video)video.pause();
+
+ show("viewer",false);
+ $("media").replaceChildren();
+ current=null;
+ setLoopUI(false);
+ render();
+}
+
+function lock(){
+ motionToken++;
+ looping=false;
+ key=null;
+ current=null;
+ clearURLs();
+
+ $("gallery").replaceChildren();
+ $("media").replaceChildren();
+
+ show("viewer",false);
+ show("vault",false);
+ show("lockBtn",false);
+ show("auth",true);
+
+ $("password").value="";
+ $("authTitle").textContent="Unlock Vault";
+ $("authBtn").textContent="Unlock";
+ show("confirmPassword",false);
+ $("authMessage").textContent="";
+}
+
+$("authBtn").onclick=auth;
+
+$("password").onkeydown=e=>{
+ if(e.key==="Enter")auth();
+};
+
+$("regularUpload").onclick=()=>{
+ saveFiles([...$("regularFiles").files],false);
+};
+
+$("liveUpload").onclick=()=>{
+ saveFiles([
+  $("liveStill").files[0],
+  $("liveMotion").files[0]
+ ].filter(Boolean),true);
+};
+
+$("lockBtn").onclick=lock;
+$("backBtn").onclick=closeViewer;
+
+$("playMotion").onclick=()=>startMotion(false);
+$("loopMotion").onclick=()=>startMotion(true);
+$("stopLoop").onclick=stopMotionLoop;
+
+$("downloadStill").onclick=()=>{
+ if(current)
+  download(current.blob,current.metadata.name);
+};
+
+$("downloadMotion").onclick=downloadMotion;
+$("deleteBtn").onclick=del;
+
+document.addEventListener("visibilitychange",()=>{
+ if(document.hidden&&key&&!busy)lock();
+});
+
+init().catch(e=>{
+ $("authMessage").textContent=
+  "Initialization failed: "+e.message;
+ $("authBtn").disabled=true;
+});
 </script>
 </body>
 </html>
