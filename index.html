@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,8 +96,6 @@ input[type=password],input[type=file]{
  padding-left:12px;
 }
 .center{text-align:center}
-
-/* Mobile-friendly Live Photo buttons */
 .live-controls{
  display:flex;
  flex-direction:column;
@@ -105,35 +104,53 @@ input[type=password],input[type=file]{
  width:100%;
 }
 .live-controls button{
- display:block;
- width:100%;
- min-height:52px;
- text-align:center;
- font-size:16px;
+ display:block;width:100%;
+ min-height:52px;text-align:center;font-size:16px;
 }
 .actions{
- display:flex;
- flex-direction:column;
- gap:10px;
- width:100%;
+ display:flex;flex-direction:column;
+ gap:10px;width:100%;
 }
-.actions button{
- width:100%;
- min-height:50px;
-}
+.actions button{width:100%;min-height:50px}
 .loop-status{
- display:flex;
- align-items:center;
- gap:8px;
- color:#c5a6ff;
- font-size:13px;
- margin:12px 0;
+ display:flex;align-items:center;gap:8px;
+ color:#c5a6ff;font-size:13px;margin:12px 0;
 }
 .loop-dot{
- width:9px;height:9px;
- background:#a36cff;border-radius:50%;
- box-shadow:0 0 12px #a36cff;
+ width:9px;height:9px;background:#a36cff;
+ border-radius:50%;box-shadow:0 0 12px #a36cff;
 }
+
+/* Fullscreen overlay for iPhone Safari */
+.fullscreen{
+ position:fixed;
+ inset:0;
+ width:100%;
+ height:100%;
+ height:100dvh;
+ z-index:100;
+ background:#000;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ overflow:hidden;
+}
+.fullscreen video{
+ width:100%;
+ height:100%;
+ object-fit:contain;
+}
+.fullscreen-exit{
+ position:absolute;
+ top:max(18px,env(safe-area-inset-top));
+ right:18px;
+ z-index:101;
+ background:#241b36d9;
+ border:1px solid #ffffff40;
+ backdrop-filter:blur(12px);
+}
+body.fullscreen-open{overflow:hidden}
+
 @media(max-width:600px){
  .viewer{padding:12px 14px 35px}
  .viewer .card{padding:16px}
@@ -235,7 +252,6 @@ input[type=password],input[type=file]{
    Live Photo looping
   </div>
 
-  <!-- Dedicated mobile Live Photo controls -->
   <div id="liveControls" class="live-controls hidden">
    <button id="playMotion" class="secondary">
     ▶ Play Motion
@@ -245,6 +261,9 @@ input[type=password],input[type=file]{
    </button>
    <button id="stopLoop" class="secondary hidden">
     ⏹ Stop Loop Live Photo
+   </button>
+   <button id="fullscreenBtn" class="secondary hidden">
+    ⛶ View Fullscreen
    </button>
   </div>
 
@@ -265,6 +284,14 @@ input[type=password],input[type=file]{
 </div>
 </section>
 
+<!-- Fullscreen Live Photo overlay -->
+<section id="fullscreenOverlay" class="fullscreen hidden">
+ <button id="exitFullscreen" class="fullscreen-exit">
+  ✕ Exit Fullscreen
+ </button>
+ <div id="fullscreenMedia" style="width:100%;height:100%"></div>
+</section>
+
 <script>
 "use strict";
 
@@ -280,6 +307,7 @@ let urls=[];
 let motionToken=0;
 let looping=false;
 let galleryToken=0;
+let fullscreenActive=false;
 
 function show(id,on){
  $(id).classList.toggle("hidden",!on);
@@ -659,6 +687,7 @@ function setLoopUI(active){
  show("stopLoop",live&&active);
  show("loopMotion",live&&!active);
  show("playMotion",live&&!active);
+ show("fullscreenBtn",live&&active);
 }
 
 function view(e){
@@ -734,7 +763,33 @@ async function startMotion(loop){
  }
 }
 
+/* Fullscreen without restarting playback */
+function enterFullscreen(){
+ if(!looping||!isLive())return;
+
+ const video=$("media").querySelector("video");
+ if(!video)return;
+
+ fullscreenActive=true;
+ $("fullscreenMedia").appendChild(video);
+ show("fullscreenOverlay",true);
+ document.body.classList.add("fullscreen-open");
+}
+
+function exitFullscreenMode(){
+ if(!fullscreenActive)return;
+
+ const video=$("fullscreenMedia").querySelector("video");
+ if(video)$("media").appendChild(video);
+
+ fullscreenActive=false;
+ show("fullscreenOverlay",false);
+ document.body.classList.remove("fullscreen-open");
+}
+
 function stopMotionLoop(){
+ if(fullscreenActive)exitFullscreenMode();
+
  motionToken++;
 
  const video=$("media").querySelector("video");
@@ -789,6 +844,8 @@ async function del(){
 }
 
 function closeViewer(){
+ if(fullscreenActive)exitFullscreenMode();
+
  motionToken++;
  looping=false;
 
@@ -803,6 +860,8 @@ function closeViewer(){
 }
 
 function lock(){
+ if(fullscreenActive)exitFullscreenMode();
+
  motionToken++;
  galleryToken++;
  looping=false;
@@ -848,6 +907,8 @@ $("backBtn").onclick=closeViewer;
 $("playMotion").onclick=()=>startMotion(false);
 $("loopMotion").onclick=()=>startMotion(true);
 $("stopLoop").onclick=stopMotionLoop;
+$("fullscreenBtn").onclick=enterFullscreen;
+$("exitFullscreen").onclick=exitFullscreenMode;
 
 $("downloadStill").onclick=()=>{
  if(current)
