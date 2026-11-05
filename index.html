@@ -1,8 +1,7 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>FNO VAULT</title>
 <style>
@@ -12,23 +11,23 @@
  --panel:#171128;
  --accent:#995fff;
  --line:#382a4e;
- --muted:#afa6c2
+ --muted:#afa6c2;
 }
 *{box-sizing:border-box}
 body{
  margin:0;background:var(--bg);color:#f8f5ff;
- font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif
+ font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
 }
 header{
  padding:18px 20px;border-bottom:1px solid var(--line);
- display:flex;align-items:center;justify-content:space-between
+ display:flex;align-items:center;justify-content:space-between;
 }
 .brand{font-size:20px;font-weight:800}
 .brand span{color:var(--accent)}
 main{max-width:750px;margin:auto;padding:20px}
 .card{
  background:var(--panel);border:1px solid var(--line);
- border-radius:20px;padding:20px;margin-bottom:18px
+ border-radius:20px;padding:20px;margin-bottom:18px;
 }
 h1{font-size:27px;margin:8px 0}
 h2{font-size:19px;margin:8px 0}
@@ -36,7 +35,7 @@ p,.hint{color:var(--muted);line-height:1.5}
 button{
  border:0;border-radius:12px;padding:13px 16px;
  background:var(--accent);color:white;font-weight:700;
- font-size:15px;cursor:pointer
+ font-size:15px;cursor:pointer;
 }
 button:disabled{opacity:.55}
 .secondary{background:#372a50}
@@ -45,57 +44,101 @@ button:disabled{opacity:.55}
 input[type=password],input[type=file]{
  width:100%;padding:12px;border:1px solid var(--line);
  border-radius:10px;background:#100c1d;color:white;
- font-size:16px;margin:7px 0
+ font-size:16px;margin:7px 0;
 }
 .small{font-size:12px}
 .toolbar{
  display:flex;align-items:center;
- justify-content:space-between;gap:10px
+ justify-content:space-between;gap:10px;
 }
 .grid{
- display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
- gap:6px
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:6px;
 }
 .tile{
- position:relative;aspect-ratio:1;background:#271d38;
- border:0;border-radius:9px;overflow:hidden;padding:0
+ position:relative;aspect-ratio:1;
+ background:#271d38;border:0;border-radius:9px;
+ overflow:hidden;padding:0;
 }
 .tile img,.tile video{
- width:100%;height:100%;object-fit:cover
+ width:100%;height:100%;object-fit:cover;
 }
 .tile .name{
  position:absolute;bottom:0;left:0;right:0;
  background:linear-gradient(transparent,#000d);
  font-size:10px;padding:18px 5px 5px;
- white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .live{
  position:absolute;top:7px;left:7px;
  background:#160f25cc;border:1px solid #cbb0ff;
- border-radius:8px;font-size:11px;padding:4px 6px
+ border-radius:8px;font-size:11px;padding:4px 6px;
 }
-.actions{display:flex;flex-wrap:wrap;gap:8px}
 .viewer{
  position:fixed;inset:0;z-index:10;
- background:#090714;overflow:auto;padding:18px
+ background:#090714;overflow-y:auto;
+ -webkit-overflow-scrolling:touch;
+ padding:18px 18px max(25px,env(safe-area-inset-bottom));
 }
 .viewer-inner{max-width:750px;margin:auto}
 .media{
- height:55vh;display:flex;
- justify-content:center;align-items:center
+ height:min(43vh,380px);
+ display:flex;justify-content:center;align-items:center;
+ margin:12px 0;
 }
 .media img,.media video{
- max-height:100%;max-width:100%;object-fit:contain
+ max-height:100%;max-width:100%;object-fit:contain;
 }
-.note{border-left:3px solid var(--accent);padding-left:12px}
+.note{
+ border-left:3px solid var(--accent);
+ padding-left:12px;
+}
 .center{text-align:center}
+
+/* Mobile-friendly Live Photo buttons */
+.live-controls{
+ display:flex;
+ flex-direction:column;
+ gap:10px;
+ margin:18px 0;
+ width:100%;
+}
+.live-controls button{
+ display:block;
+ width:100%;
+ min-height:52px;
+ text-align:center;
+ font-size:16px;
+}
+.actions{
+ display:flex;
+ flex-direction:column;
+ gap:10px;
+ width:100%;
+}
+.actions button{
+ width:100%;
+ min-height:50px;
+}
 .loop-status{
- display:flex;align-items:center;gap:8px;
- color:#c5a6ff;font-size:13px;margin:12px 0
+ display:flex;
+ align-items:center;
+ gap:8px;
+ color:#c5a6ff;
+ font-size:13px;
+ margin:12px 0;
 }
 .loop-dot{
- width:9px;height:9px;background:#a36cff;
- border-radius:50%;box-shadow:0 0 12px #a36cff
+ width:9px;height:9px;
+ background:#a36cff;border-radius:50%;
+ box-shadow:0 0 12px #a36cff;
+}
+@media(max-width:600px){
+ .viewer{padding:12px 14px 35px}
+ .viewer .card{padding:16px}
+ .media{height:38vh;min-height:190px}
+ .live-controls button{min-height:56px}
 }
 </style>
 </head>
@@ -137,7 +180,7 @@ input[type=password],input[type=file]{
 
   <h2 style="margin-top:24px">Upload a Live Photo pair</h2>
   <p class="small">
-  Choose the original still image and matching
+  Choose the original still image and its matching
   MOV motion clip.
   </p>
 
@@ -175,6 +218,7 @@ input[type=password],input[type=file]{
 
 <section id="viewer" class="viewer hidden">
 <div class="viewer-inner">
+
  <div class="toolbar">
   <button id="backBtn" class="secondary">← Back</button>
   <b>FNO VAULT</b>
@@ -191,6 +235,19 @@ input[type=password],input[type=file]{
    Live Photo looping
   </div>
 
+  <!-- Dedicated mobile Live Photo controls -->
+  <div id="liveControls" class="live-controls hidden">
+   <button id="playMotion" class="secondary">
+    ▶ Play Motion
+   </button>
+   <button id="loopMotion">
+    🔁 Loop Live Photo
+   </button>
+   <button id="stopLoop" class="secondary hidden">
+    ⏹ Stop Loop Live Photo
+   </button>
+  </div>
+
   <p id="liveHelp" class="note small hidden">
   Both Live Photo components are stored together.
   Safari cannot guarantee restoration as an
@@ -198,29 +255,11 @@ input[type=password],input[type=file]{
   </p>
 
   <div class="actions">
-   <button id="playMotion" class="secondary hidden">
-    ▶ Play Motion
-   </button>
-
-   <button id="loopMotion" class="hidden">
-    🔁 Loop Live Photo
-   </button>
-
-   <button id="stopLoop" class="secondary hidden">
-    ⏹ Stop Loop Live Photo
-   </button>
-
-   <button id="downloadStill">
-    Download Original
-   </button>
-
+   <button id="downloadStill">Download Original</button>
    <button id="downloadMotion" class="secondary hidden">
     Download MOV
    </button>
-
-   <button id="deleteBtn" class="danger">
-    Delete
-   </button>
+   <button id="deleteBtn" class="danger">Delete</button>
   </div>
  </div>
 </div>
@@ -229,17 +268,18 @@ input[type=password],input[type=file]{
 <script>
 "use strict";
 
-const $ = id => document.getElementById(id);
-const enc = new TextEncoder();
-const dec = new TextDecoder();
+const $=id=>document.getElementById(id);
+const enc=new TextEncoder();
+const dec=new TextDecoder();
 
 let db;
-let key = null;
-let current = null;
-let busy = false;
-let urls = [];
-let motionToken = 0;
-let looping = false;
+let key=null;
+let current=null;
+let busy=false;
+let urls=[];
+let motionToken=0;
+let looping=false;
+let galleryToken=0;
 
 function show(id,on){
  $(id).classList.toggle("hidden",!on);
@@ -512,6 +552,9 @@ function url(blob){
 
 async function render(){
  if(!key)return;
+ const token=++galleryToken;
+ const activeKey=key;
+
  clearURLs();
  $("gallery").replaceChildren();
 
@@ -519,12 +562,17 @@ async function render(){
  const entries=[];
 
  for(const r of records){
+  if(!key||key!==activeKey||token!==galleryToken)
+   return;
   try{
    entries.push(await unpack(r));
   }catch(e){
    console.error("Decryption failed for item",r.id,e);
   }
  }
+
+ if(!key||key!==activeKey||token!==galleryToken)
+  return;
 
  entries.sort(
   (a,b)=>b.metadata.uploaded-a.metadata.uploaded
@@ -594,20 +642,23 @@ function restoreStill(){
  $("media").appendChild(media);
 }
 
-function setLoopUI(active){
- looping=active;
- show("loopStatus",active);
- show("stopLoop",active);
- show("loopMotion",!active&&isLive());
- show("playMotion",!active&&isLive());
-}
-
 function isLive(){
  return !!(
   current&&
   current.metadata.kind==="live-pair"&&
   current.record.motion
  );
+}
+
+function setLoopUI(active){
+ looping=active;
+ const live=isLive();
+
+ show("liveControls",live);
+ show("loopStatus",active);
+ show("stopLoop",live&&active);
+ show("loopMotion",live&&!active);
+ show("playMotion",live&&!active);
 }
 
 function view(e){
@@ -663,14 +714,15 @@ async function startMotion(loop){
 
   if(!loop){
    video.onended=()=>{
-    if(token===motionToken&&current===entry){
+    if(token===motionToken&&current===entry)
      restoreStill();
-    }
    };
   }
 
   await video.play().catch(()=>{
-   // Safari may require a second tap to start playback.
+   $("viewInfo").textContent=
+    "Tap the video to start playback if Safari blocks autoplay.";
+   video.controls=true;
   });
 
  }catch(e){
@@ -711,13 +763,15 @@ function download(blob,name){
 async function downloadMotion(){
  if(!isLive())return;
  try{
-  const data=await decrypt(current.record.motion);
+  const entry=current;
+  const data=await decrypt(entry.record.motion);
+  if(!key||current!==entry)return;
   download(
    new Blob([data],{
-    type:current.metadata.motionType||
+    type:entry.metadata.motionType||
      "video/quicktime"
    }),
-   current.metadata.motionName||"motion.mov"
+   entry.metadata.motionName||"motion.mov"
   );
  }catch(e){
   alert("Download failed: "+e.message);
@@ -750,6 +804,7 @@ function closeViewer(){
 
 function lock(){
  motionToken++;
+ galleryToken++;
  looping=false;
  key=null;
  current=null;
